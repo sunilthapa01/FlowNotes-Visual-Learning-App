@@ -29,7 +29,7 @@ export default function Sidebar({ activeNote, onSelectNote, onCreateNote, isOpen
   const sidebarRef = useRef(null)
   const listRef = useRef(null)
 
-  console.log("this is check for notes type :- ",typeof notes)
+  console.log("this is check for notes type :- ",notes)
 
   useEffect(() => {
     // GSAP slide-in on mount
@@ -184,7 +184,7 @@ export default function Sidebar({ activeNote, onSelectNote, onCreateNote, isOpen
                           ))}
                           <span className="text-xs text-[var(--text-muted)] flex items-center gap-0.5">
                             <Hash size={10} />
-                            {note.nodes}
+                            {note.nodes?.length ?? 0}
                           </span>
                         </div>
                       </div>

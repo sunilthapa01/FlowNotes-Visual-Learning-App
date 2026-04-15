@@ -13,9 +13,12 @@ const TYPE_ICONS = {
   end:      Square,
 }
 
-// onClose  → called when dialog should close
-// catalogue → array of node type definitions (for display only)
-export default function AddNodeDialog({ open, onClose, catalogue }) {
+// Props:
+//   open      → controls dialog visibility
+//   onClose   → called when dialog should dismiss
+//   catalogue → array of node type definitions
+//   onAdd     → callback(type, title, description) → FlowCanvas handles the actual state update
+export default function AddNodeDialog({ open, onClose, catalogue, onAdd }) {
   const [selectedType, setSelectedType] = useState('process')
   const [title, setTitle]               = useState('')
   const [desc,  setDesc]                = useState('')
@@ -321,7 +324,15 @@ export default function AddNodeDialog({ open, onClose, catalogue }) {
                 <motion.button
                   whileHover={{ scale: 1.04, boxShadow: '0 0 20px rgba(79,142,247,0.4)' }}
                   whileTap={{ scale: 0.96 }}
-                  onClick={() => step === 1 ? setStep(2) : resetAndClose()}
+                  onClick={() => {
+                    if (step === 1) {
+                      setStep(2)
+                    } else {
+                      // Calls FlowCanvas.handleAddNode → which calls onSave(updatedNote)
+                      onAdd(selectedType, title.trim() || activeCat?.label, desc.trim())
+                      resetAndClose()
+                    }
+                  }}
                   className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all"
                   style={{
                     background: step === 2 && activeCat

@@ -55,6 +55,7 @@ export default function NoteEditor({ activeNote, onSave }) {
 
   useEffect(() => {
     setTitle(activeNote?.title || "");
+    setDescription(activeNote?.description || "");
     setTags(activeNote?.tags || []);
     setSaved(false);
 
@@ -112,7 +113,7 @@ export default function NoteEditor({ activeNote, onSave }) {
           </h3>
           <p className="text-xs text-[var(--text-muted)] mt-0.5">
             {activeNote
-              ? `Editing · ${activeNote.nodes} nodes`
+              ? `Editing · ${activeNote.nodes?.length ?? 0} nodes`
               : "Select a note"}
           </p>
         </div>
@@ -348,7 +349,7 @@ export default function NoteEditor({ activeNote, onSave }) {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[var(--text-muted)]">Nodes</span>
                 <span className="text-[var(--accent-blue)]">
-                  {activeNote.nodes}
+                  {activeNote.nodes?.length ?? 0}
                 </span>
               </div>
             </div>
