@@ -92,7 +92,7 @@ export default function FlowNode({ type, title, description, isDragging }) {
           backdropFilter: 'blur(12px)',
         }}
       >
-        {/* Top accent bar */}
+        {/* Top acc ent bar */}
         <div
           className="h-0.5 w-full"
           style={{ background: `linear-gradient(90deg, transparent, ${config.iconColor}, transparent)` }}

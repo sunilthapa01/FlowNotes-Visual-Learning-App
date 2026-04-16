@@ -38,7 +38,7 @@ export default function Navbar() {
           <Zap size={16} className="text-white" />
         </div>
         <div>
-          <span className="text-sm font-bold gradient-text-blue block leading-none">FlowNotes</span>
+          <span className="text-sm font-bold gradient-text-blue block leading-none">VisualBrain</span>
           <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">Pro Workspace</span>
         </div>
       </div>
