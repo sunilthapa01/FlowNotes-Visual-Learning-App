@@ -84,10 +84,7 @@ export default function MainLayout() {
       {/* App shell */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Navbar */}
-        <Navbar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
+        <Navbar />
 
         {/* Main body */}
         <div className="flex flex-1 overflow-hidden relative">
@@ -97,10 +94,9 @@ export default function MainLayout() {
             activeNote={activeNote}
             onSelectNote={setActiveNote}
             onCreateNote={handleCreateNote}
-            isOpen={sidebarOpen}
             notes={filteredNotes}
             searchQuery={searchQuery}
-            onClose={() => setSidebarOpen(false)}
+            onSearchChange={setSearchQuery}
           />
 
           <div className="flex-1 flex flex-row overflow-hidden min-w-0">
