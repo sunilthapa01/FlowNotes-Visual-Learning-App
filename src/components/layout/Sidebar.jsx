@@ -48,22 +48,10 @@ export default function Sidebar({ activeNote, onSelectNote, onCreateNote, notes,
       style={{ opacity: 0 }}
     >
       {/* Logo Section */}
-      <div className="px-5 py-4 flex items-center gap-2.5">
-        <motion.div
-          whileHover={{ rotate: 20, scale: 1.1 }}
-          className="w-8 h-8 rounded-xl flex items-center justify-center shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #4F8EF7, #9B5DE5)' }}
-        >
-          <Zap size={16} className="text-white" />
-        </motion.div>
-        <div>
-          <span className="text-sm font-bold gradient-text-blue block">FlowNotes</span>
-          <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">Workspace</span>
-        </div>
-      </div>
+     
 
       {/* Search Notes (Migrated from Navbar) */}
-      <div className="px-4 py-2">
+      <div className="px-4 py-5">
         <div className="relative group">
           <div className={`absolute inset-0 bg-blue-500/5 rounded-xl transition-opacity duration-300 ${searchFocused ? 'opacity-100' : 'opacity-0'}`} />
           <Search
