@@ -5,9 +5,8 @@ import {
   Search, Sun, Moon, Bell, ChevronDown, Zap
 } from 'lucide-react'
 
-export default function Navbar({ isDark, onThemeToggle }) {
+export default function Navbar() {
   const navRef = useRef(null)
-  const [searchFocused, setSearchFocused] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
 
   useEffect(() => {
@@ -27,59 +26,28 @@ export default function Navbar({ isDark, onThemeToggle }) {
   return (
     <nav
       ref={navRef}
-      className="relative z-30 flex items-center justify-between px-4 lg:px-6 h-14 glass border-b border-[var(--border-subtle)]"
+      className="relative z-30 flex items-center justify-between px-6 h-14 glass border-b border-[var(--border-subtle)]"
       style={{ opacity: 0 }}
     >
-      {/* Logo mark for mobile */}
-      <div className="flex items-center gap-2 lg:hidden">
+      {/* Branding */}
+      <div className="flex items-center gap-2.5">
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center"
+          className="w-8 h-8 rounded-xl flex items-center justify-center shadow-lg"
           style={{ background: 'linear-gradient(135deg, #4F8EF7, #9B5DE5)' }}
         >
-          <Zap size={14} className="text-white" />
+          <Zap size={16} className="text-white" />
         </div>
-        <span className="text-sm font-bold gradient-text-blue">FlowNotes</span>
+        <div>
+          <span className="text-sm font-bold gradient-text-blue block leading-none">FlowNotes</span>
+          <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-bold">Pro Workspace</span>
+        </div>
       </div>
 
-      {/* Search */}
-      <div className="flex-1 max-w-md mx-4 lg:mx-0 lg:ml-0">
-        <motion.div
-          animate={searchFocused ? { scale: 1.02 } : { scale: 1 }}
-          className="relative"
-        >
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"
-          />
-          <input
-            type="text"
-            placeholder="Search notes, nodes..."
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-            className="w-full pl-9 pr-4 py-2 text-sm rounded-xl outline-none transition-all duration-300 text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
-            style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: searchFocused
-                ? '1px solid rgba(79,142,247,0.6)'
-                : '1px solid rgba(255,255,255,0.08)',
-              boxShadow: searchFocused ? '0 0 12px rgba(79,142,247,0.2)' : 'none',
-            }}
-          />
-        </motion.div>
-      </div>
+      {/* Middle Spacer */}
+      <div className="flex-1" />
 
       {/* Right actions */}
       <div className="flex items-center gap-2">
-        {/* Theme toggle */}
-        <motion.button
-          whileHover={{ scale: 1.1, rotate: 15 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={onThemeToggle}
-          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
-        >
-          {isDark ? <Sun size={15} className="text-[var(--accent-cyan)]" /> : <Moon size={15} className="text-[var(--accent-blue)]" />}
-        </motion.button>
 
         {/* Notifications */}
         <div className="relative">
@@ -130,8 +98,8 @@ export default function Navbar({ isDark, onThemeToggle }) {
 
         {/* Avatar */}
         <motion.div
-          whileHover={{ scale: 1.08, boxShadow: '0 0 16px rgba(79,142,247,0.4)' }}
-          className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl cursor-pointer"
+          whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(79,142,247,0.3)' }}
+          className="flex items-center gap-2.5 pl-2.5 pr-4 py-1.5 rounded-xl cursor-pointer"
           style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
         >
           <div
@@ -140,8 +108,8 @@ export default function Navbar({ isDark, onThemeToggle }) {
           >
             SN
           </div>
-          <span className="hidden sm:block text-xs text-[var(--text-secondary)] font-medium">Sunil</span>
-          <ChevronDown size={12} className="text-[var(--text-muted)] hidden sm:block" />
+          <span className="text-xs text-[var(--text-secondary)] font-semibold tracking-wide">Sunil</span>
+          <ChevronDown size={12} className="text-[var(--text-muted)]" />
         </motion.div>
       </div>
     </nav>

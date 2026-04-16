@@ -26,21 +26,6 @@
     --glass-strong-border: rgba(255,255,255,0.12);
   }
 
-  /* ── Light theme ───────────────────────────────────────────────────── */
-  .light {
-    --bg-primary:          #F0F2F8;
-    --bg-surface:          rgba(0,0,0,0.025);
-    --bg-surface-hover:    rgba(0,0,0,0.05);
-    --border-subtle:       rgba(0,0,0,0.07);
-    --border-glow:         rgba(79,142,247,0.35);
-    --text-primary:        #1A1D2E;
-    --text-secondary:      #4B5263;
-    --text-muted:          #8892A4;
-    --glass-bg:            rgba(255,255,255,0.65);
-    --glass-border:        rgba(0,0,0,0.07);
-    --glass-strong-bg:     rgba(255,255,255,0.85);
-    --glass-strong-border: rgba(0,0,0,0.10);
-  }
 
   /* Smooth transition when theme switches */
   *, *::before, *::after {
@@ -62,6 +47,7 @@
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.35s ease, color 0.35s ease;
   }
+
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }

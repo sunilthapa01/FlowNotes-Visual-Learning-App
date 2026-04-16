@@ -109,7 +109,7 @@ export default function FlowCanvas({ activeNote, onSave }) {
   }, [selectedNode, activeNote, nodes, connections, onSave])
 
   // ─── Drag: Start ──────────────────────────────────────────────────────
-  const handleMouseDown = (e, nodeId) => {
+  const handlePointerDown = (e, nodeId) => {
     e.preventDefault()
     e.stopPropagation()
     const node = nodes.find((n) => n.id === nodeId)
@@ -122,6 +122,8 @@ export default function FlowCanvas({ activeNote, onSave }) {
       x: (e.clientX - rect.left) / zoom - node.x,
       y: (e.clientY - rect.top)  / zoom - node.y,
     })
+    // Start capturing pointer events for smooth dragging even outside the element
+    e.target.setPointerCapture(e.pointerId)
   }
 
   // ─── Drag: Move ───────────────────────────────────────────────────────
@@ -137,7 +139,7 @@ export default function FlowCanvas({ activeNote, onSave }) {
 
   // ─── Drag: End ────────────────────────────────────────────────────────
   // Save final position to parent only once on release
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback((e) => {
     if (!dragging || !activeNote || !onSave) { setDragging(null); return }
     onSave({
       ...activeNote,
@@ -146,6 +148,10 @@ export default function FlowCanvas({ activeNote, onSave }) {
       ),
     })
     setDragging(null)
+    // Release pointer capture
+    if (e.target.releasePointerCapture) {
+      e.target.releasePointerCapture(e.pointerId)
+    }
   }, [dragging, livePos, nodes, activeNote, onSave])
 
   const hasNodes = nodes.length > 0
@@ -155,7 +161,7 @@ export default function FlowCanvas({ activeNote, onSave }) {
 
       {/* ── Toolbar ──────────────────────────────────────────────────── */}
       <div
-        className="flex items-center gap-2 px-4 py-2 border-b border-[var(--border-subtle)] flex-shrink-0"
+        className="flex items-center gap-2 px-6 py-2 border-b border-[var(--border-subtle)] flex-shrink-0"
         style={{ background: 'rgba(8,11,20,0.65)', backdropFilter: 'blur(12px)' }}
       >
         <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
@@ -331,11 +337,12 @@ export default function FlowCanvas({ activeNote, onSave }) {
         <div
           ref={canvasRef}
           className="flex-1 relative overflow-hidden dot-grid select-none"
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          onPointerMove={handleMouseMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onPointerLeave={handlePointerUp}
           onClick={() => setSelectedNode(null)}
-          style={{ background: 'rgba(8,11,20,0.4)', cursor: dragging ? 'grabbing' : 'default' }}
+          style={{ background: 'rgba(8,11,20,0.4)', cursor: dragging ? 'grabbing' : 'default', touchAction: 'none' }}
         >
           {/* Vignette */}
           <div
@@ -481,7 +488,7 @@ export default function FlowCanvas({ activeNote, onSave }) {
                     animate={{ opacity: 1, scale: 1,    y: 0  }}
                     exit={{    opacity: 0, scale: 0.5,  y: -12 }}
                     transition={{ type: 'spring', stiffness: 280, damping: 22, delay: 0.03 * i }}
-                    onMouseDown={(e) => handleMouseDown(e, node.id)}
+                    onPointerDown={(e) => handlePointerDown(e, node.id)}
                     onClick={(e) => { e.stopPropagation(); setSelectedNode(node.id) }}
                   >
                     {/* Selection ring */}

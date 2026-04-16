@@ -10,26 +10,21 @@ import EmptyState from "../empty/EmptyState";
 
 export default function MainLayout() {
   const [activeNote,   setActiveNote]   = useState(null);
-  const [sidebarOpen,  setSidebarOpen]  = useState(false);
-  const [isDark,       setIsDark]       = useState(() => {
-    // Persist theme across reloads
-    return localStorage.getItem("fn-theme") !== "light";
-  });
+  const [sidebarOpen,  setSidebarOpen]  = useState(true); // Default to true on desktop
   const [hasNotes,     setHasNotes]     = useState(true);
   const [notes,        setNotes]        = useState([]);
   const [searchQuery,  setSearchQuery]  = useState("");
+  const [isMobile,     setIsMobile]     = useState(false);
 
-  // Apply theme class to <html> — drives all CSS variable switches
+  // Check for desktop-only requirement (992px)
   useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.remove("light");
-      localStorage.setItem("fn-theme", "dark");
-    } else {
-      root.classList.add("light");
-      localStorage.setItem("fn-theme", "light");
-    }
-  }, [isDark]);
+    const checkWidth = () => {
+      setIsMobile(window.innerWidth < 1220);
+    };
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
 
   // ── Filtered notes for search ──────────────────────────────────────
   const filteredNotes = useMemo(() => {
@@ -71,48 +66,31 @@ export default function MainLayout() {
       style={{ background: "var(--bg-primary)" }}
     >
       {/* Neural network background */}
-      <NeuralBackground isDark={isDark} />
+      <NeuralBackground />
 
-      {/* Subtle color overlay that complements neural bg */}
+      {/* Subtle color overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-0"
         animate={{
-          background: isDark
-            ? [
-                "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.05) 0%, transparent 60%)",
-                "radial-gradient(ellipse 80% 60% at 75% 30%, rgba(155,93,229,0.05) 0%, transparent 60%)",
-                "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.05) 0%, transparent 60%)",
-              ]
-            : [
-                "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.04) 0%, transparent 60%)",
-                "radial-gradient(ellipse 80% 60% at 75% 30%, rgba(155,93,229,0.04) 0%, transparent 60%)",
-                "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.04) 0%, transparent 60%)",
-              ],
+          background: [
+            "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.05) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 60% at 75% 30%, rgba(155,93,229,0.05) 0%, transparent 60%)",
+            "radial-gradient(ellipse 80% 60% at 20% 20%, rgba(79,142,247,0.05) 0%, transparent 60%)",
+          ],
         }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
 
       {/* App shell */}
       <div className="relative z-10 flex flex-col h-full">
-        {/* Navbar — gets search query setter + theme controls */}
+        {/* Navbar */}
         <Navbar
-          isDark={isDark}
-          onThemeToggle={() => setIsDark((d) => !d)}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
         />
 
         {/* Main body */}
         <div className="flex flex-1 overflow-hidden relative">
-          {/* Mobile hamburger */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden absolute top-3 left-3 z-20 w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer glass"
-          >
-            <Menu size={15} className="text-[var(--text-secondary)]" />
-          </motion.button>
 
           {/* Sidebar — receives filtered notes */}
           <Sidebar
@@ -125,8 +103,7 @@ export default function MainLayout() {
             onClose={() => setSidebarOpen(false)}
           />
 
-          {/* Canvas / empty state */}
-          <div className="flex-1 flex overflow-hidden min-w-0">
+          <div className="flex-1 flex flex-row overflow-hidden min-w-0">
             <AnimatePresence mode="wait">
               {!hasNotes ? (
                 <motion.div
@@ -151,7 +128,7 @@ export default function MainLayout() {
               )}
             </AnimatePresence>
 
-            {/* Right editor panel */}
+            {/* Editor panel */}
             <AnimatePresence>
               {hasNotes && (
                 <motion.div
@@ -160,7 +137,7 @@ export default function MainLayout() {
                   animate={{ x: 0,  opacity: 1 }}
                   exit={{ x: 60,    opacity: 0 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="hidden md:flex"
+                  className="flex w-80 xl:w-96 border-l border-[var(--border-subtle)]"
                 >
                   <NoteEditor activeNote={activeNote} onSave={handleSaveNote} />
                 </motion.div>
@@ -169,6 +146,35 @@ export default function MainLayout() {
           </div>
         </div>
       </div>
+
+      {/* Desktop only Warning Popup */}
+      <AnimatePresence>
+        {isMobile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-[#080B14]/90 backdrop-blur-xl p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="glass max-w-md w-full p-8 rounded-3xl border border-white/10 text-center shadow-2xl"
+            >
+              <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
+                <Menu className="text-blue-400 rotate-90" size={32} />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-4">Desktop Version Only</h2>
+              <p className="text-[var(--text-secondary)] leading-relaxed mb-8">
+                FlowNotes is a professional-grade visual learning tool designed exclusively for large screens. Please switch to a desktop device for the best experience.
+              </p>
+              <div className="text-xs font-mono text-blue-400/60 uppercase tracking-widest">
+                Screen width under 1220px detected
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
